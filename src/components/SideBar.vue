@@ -44,7 +44,7 @@
                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
               />
             </svg>
-            <span class="text-xs">{{ element.name }}</span>
+            <span class="text-xs">{{ shorten(element.name) }}</span>
             <button class="ml-auto" type="button" @click="removeFile(element)">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -74,7 +74,8 @@
 import { defineComponent } from "vue";
 import draggable from "vuedraggable";
 import { File } from "../types";
-//import { ipcRenderer } from "electron";
+import { ipcRenderer } from "electron";
+import { truncate } from "lodash";
 export default defineComponent({
   name: "SideBar",
   components: {
@@ -82,12 +83,15 @@ export default defineComponent({
   },
   computed: {
     files() {
-      return this.$store.state.fileList;
+      return [...this.$store.state.fileList];
     },
   },
   methods: {
     removeFile(file: File) {
       this.$store.commit("remove", file);
+    },
+    shorten(name: string) {
+      return truncate(name, { length: 25 });
     },
   },
   mounted() {

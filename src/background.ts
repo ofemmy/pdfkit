@@ -1,6 +1,6 @@
 "use strict";
 
-import { app, protocol, BrowserWindow } from "electron";
+import { app, protocol, BrowserWindow, ipcMain, dialog } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 const isDevelopment = process.env.NODE_ENV !== "production";
@@ -9,10 +9,10 @@ const isDevelopment = process.env.NODE_ENV !== "production";
 protocol.registerSchemesAsPrivileged([
   { scheme: "app", privileges: { secure: true, standard: true } },
 ]);
-
+let win;
 async function createWindow() {
   // Create the browser window.
-  const win = new BrowserWindow({
+  win = new BrowserWindow({
     width: 800,
     height: 600,
     titleBarStyle: "hiddenInset",
@@ -34,7 +34,18 @@ async function createWindow() {
     win.loadURL("app://./index.html");
   }
 }
-
+ipcMain.on("open-file-dialog", (event) => {
+  dialog
+    .showOpenDialog(win, {
+      properties: ["openFile", "multiSelections"],
+      filters: [{ name: "Documents", extensions: ["pdf", "txt"] }],
+    })
+    .then(({ filePaths }) => {
+      if (filePaths.length > 0) {
+        event.sender.send("file-selected", filePaths);
+      }
+    });
+});
 // Quit when all windows are closed.
 app.on("window-all-closed", () => {
   // On macOS it is common for applications and their menu bar

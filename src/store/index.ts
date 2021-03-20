@@ -1,33 +1,22 @@
 import { createStore } from "vuex";
 import { File } from "../types";
+import { uniqBy } from "lodash";
 interface State {
-  fileList: File[];
+  fileList: Array<File>;
 }
 export const AppStore = createStore<State>({
   state() {
     return {
-      fileList: [
-        {
-          name: "Jean",
-          path: "/users/jean",
-          id: 0,
-        },
-        {
-          name: "John",
-          path: "/users/jean",
-          id: 1,
-        },
-        {
-          name: "Joao",
-          path: "/users/jean",
-          id: 2,
-        },
-      ],
+      fileList: [],
     };
   },
   mutations: {
     remove(state, file: File) {
-      state.fileList = state.fileList.filter((f) => f.id !== file.id);
+      state.fileList = state.fileList.filter((f) => file.id !== f.id);
+    },
+    addToFileList(state, files: File[]) {
+      const allEntries = [...state.fileList, ...files];
+      state.fileList = uniqBy(allEntries, "name");
     },
   },
 });
