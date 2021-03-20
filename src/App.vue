@@ -1,30 +1,36 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+  <div id="app" class="bg-primary-light relative text-gray-200 h-screen">
+    <Navbar />
+    <div class="flex">
+      <SideBar :files="fileList" />
+      <div class="flex flex-1 ml-64 mt-12 overflow-y-auto px-6">
+        <router-view />
+      </div>
+    </div>
   </div>
-  <router-view />
 </template>
-
+<script lang="ts">
+import { defineComponent } from "vue";
+import Navbar from "@/components/NavBar.vue";
+import SideBar from "@/components/SideBar.vue";
+export default defineComponent({
+  components: { Navbar, SideBar },
+  data() {
+    return {
+      fileList: [],
+    };
+  },
+});
+</script>
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@300;400&display=swap");
+body {
+  -webkit-app-region: drag;
+  font-family: Lato, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
 }
-
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
+#sidebar {
+  -webkit-app-region: no-drag;
 }
 </style>
