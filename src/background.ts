@@ -1,6 +1,8 @@
 "use strict";
 
 import { app, protocol, BrowserWindow, ipcMain, dialog } from "electron";
+import * as path from "path";
+import * as fs from "fs";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 const isDevelopment = process.env.NODE_ENV !== "production";
@@ -23,7 +25,9 @@ async function createWindow() {
       nodeIntegration: true,
     },
   });
-
+  win.webContents.on("did-finish-load", () => {
+    win.webContents.send("user-document-directory", app.getPath("documents"));
+  });
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL as string);
@@ -34,7 +38,7 @@ async function createWindow() {
     win.loadURL("app://./index.html");
   }
 }
-ipcMain.on("open-file-dialog", (event) => {
+ipcMain.on("select-file", (event) => {
   dialog
     .showOpenDialog(win, {
       properties: ["openFile", "multiSelections"],
@@ -45,6 +49,29 @@ ipcMain.on("open-file-dialog", (event) => {
         event.sender.send("file-selected", filePaths);
       }
     });
+});
+ipcMain.on("select-directory", (event) => {
+  dialog
+    .showOpenDialog(win, {
+      properties: ["openDirectory", "createDirectory"],
+    })
+    .then(({ filePaths }) => {
+      if (filePaths.length > 0) {
+        event.sender.send("directory-selected", filePaths);
+      }
+    });
+});
+ipcMain.on("save-file", async (_, ...data) => {
+  const [pdfByte, outputFileName, outputDir] = data;
+  const outputPath = path.join(outputDir, outputFileName);
+  fs.writeFile(outputPath, pdfByte, (err) => {
+    if (err) {
+      console.log("There was an error writing the document");
+      console.log(err);
+    } else {
+      console.log("Written File");
+    }
+  });
 });
 // Quit when all windows are closed.
 app.on("window-all-closed", () => {

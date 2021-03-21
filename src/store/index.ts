@@ -3,11 +3,13 @@ import { File } from "../types";
 import { uniqBy } from "lodash";
 interface State {
   fileList: Array<File>;
+  destinationDirectory: string;
 }
 export const AppStore = createStore<State>({
   state() {
     return {
       fileList: [],
+      destinationDirectory: "",
     };
   },
   mutations: {
@@ -17,6 +19,15 @@ export const AppStore = createStore<State>({
     addToFileList(state, files: File[]) {
       const allEntries = [...state.fileList, ...files];
       state.fileList = uniqBy(allEntries, "name");
+    },
+    setDestinationDirectory(state, dirName) {
+      state.destinationDirectory = dirName;
+    },
+    updateList(state, payload) {
+      state.fileList = payload;
+    },
+    updateDirectory(state, dirName: string) {
+      console.log(dirName);
     },
   },
 });

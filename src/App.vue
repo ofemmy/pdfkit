@@ -11,6 +11,7 @@
 </template>
 <script lang="ts">
 import { defineComponent } from "vue";
+import { ipcRenderer } from "electron";
 import Navbar from "@/components/NavBar.vue";
 import SideBar from "@/components/SideBar.vue";
 export default defineComponent({
@@ -19,6 +20,11 @@ export default defineComponent({
     return {
       fileList: [],
     };
+  },
+  mounted() {
+    ipcRenderer.on("user-document-directory", (_, docDirectory) =>
+      this.$store.commit("setDestinationDirectory", docDirectory)
+    );
   },
 });
 </script>

@@ -21,7 +21,7 @@
     </div>
     <div class="space-y-2" v-if="files.length > 0">
       <draggable
-        :list="files"
+        v-model="files"
         tag="transition-group"
         ghost-class="ghost"
         item-key="id"
@@ -82,8 +82,13 @@ export default defineComponent({
     draggable,
   },
   computed: {
-    files() {
-      return [...this.$store.state.fileList];
+    files: {
+      get(): Array<File> {
+        return this.$store.state.fileList;
+      },
+      set(value): void {
+        this.$store.commit("updateList", value);
+      },
     },
   },
   methods: {
