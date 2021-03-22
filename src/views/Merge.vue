@@ -73,7 +73,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { ipcRenderer } from "electron";
-import { last } from "lodash";
+import { Utils } from "../lib/Utils";
 import { mergePdf } from "@/lib/PdfClient";
 import { File } from "../types";
 export default defineComponent({
@@ -91,10 +91,12 @@ export default defineComponent({
   },
   methods: {
     openFileDialog() {
-      ipcRenderer.send("select-file");
+      Utils.openFileDialog();
+      //ipcRenderer.send("select-file");
     },
     openDirectoryDialog() {
-      ipcRenderer.send("select-directory");
+      Utils.openDirectoryDialog();
+      //ipcRenderer.send("select-directory");
     },
     async merge() {
       const files = this.$store.state.fileList;
@@ -106,27 +108,24 @@ export default defineComponent({
         this.errorMsg = "Merged filename is required";
         return;
       }
-      const resultPdfBytes = await mergePdf(files);
-      ipcRenderer.send(
-        "save-file",
-        resultPdfBytes,
-        this.mergedFileName,
-        this.destinationDir
-      );
+      const result = await mergePdf(files);
+      if (!result.errorMsg) {
+        ipcRenderer.send(
+          "save-file",
+          result.data,
+          this.mergedFileName,
+          this.destinationDir
+        );
+      }
     },
   },
   mounted() {
     ipcRenderer.on("file-selected", (_, filePaths) => {
-      const currentItems = this.$store.state.fileList.length;
-      const fileNames = filePaths.map((filePath, index) => ({
-        id: index + currentItems,
-        path: filePath,
-        name: last(filePath.split("/")),
-      }));
-      this.$store.commit("addToFileList", fileNames);
+      Utils.selectFiles(filePaths);
     });
     ipcRenderer.on("directory-selected", (_, filePaths) => {
-      this.$store.commit("setDestinationDirectory", filePaths[0]);
+      Utils.selectDirectory(filePaths);
+      //this.$store.commit("setDestinationDirectory", filePaths[0]);
     });
   },
 });
