@@ -62,7 +62,7 @@
         <button
           @click="merge"
           type="button"
-          class="inline-flex uppercase items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-sm shadow-sm text-gray-800 bg-tertiary hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-700 mr-4"
+          class="inline-flex uppercase items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-sm shadow-sm text-gray-800 bg-tertiary hover:bg-tertiary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-tertiary-dark mr-4"
         >
           Merge files
         </button>

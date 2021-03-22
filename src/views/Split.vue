@@ -48,7 +48,12 @@
 
           <div class="bg-gray-800 rounded-md -space-y-px">
             <!-- On: "bg-indigo-50 border-indigo-200 z-10", Off: "border-gray-200" -->
-            <div class="relative border rounded-tl-md rounded-tr-md p-4 flex">
+            <div
+              class="relative border rounded-tl-md rounded-tr-md p-4 flex"
+              :class="[
+                splitMode === 'splitSingle' ? 'border-tertiary z-10' : '',
+              ]"
+            >
               <div class="flex items-center h-5">
                 <input
                   id="settings-option-0"
@@ -64,16 +69,29 @@
                 class="ml-3 flex flex-col cursor-pointer"
               >
                 <!-- On: "text-indigo-900", Off: "text-gray-900" -->
-                <span class="block text-sm font-medium"> Split Mode </span>
+                <span
+                  class="block text-sm font-medium"
+                  :class="[splitMode === 'splitSingle' ? 'text-tertiary' : '']"
+                >
+                  Split Mode
+                </span>
                 <!-- On: "text-indigo-700", Off: "text-gray-500" -->
-                <span class="block text-sm">
+                <span
+                  class="block text-sm"
+                  :class="[splitMode === 'splitSingle' ? 'text-tertiary' : '']"
+                >
                   Select this to split the PDF into single pages
                 </span>
               </label>
             </div>
 
             <!-- On: "bg-indigo-50 border-indigo-200 z-10", Off: "border-gray-200" -->
-            <div class="relative border border-gray-200 p-4 flex">
+            <div
+              class="relative border border-gray-200 p-4 flex"
+              :class="[
+                splitMode === 'extractSingle' ? 'border-tertiary z-10' : '',
+              ]"
+            >
               <div class="flex items-center h-5">
                 <input
                   id="settings-option-1"
@@ -88,16 +106,31 @@
                 class="ml-3 flex flex-col cursor-pointer"
               >
                 <!-- On: "text-indigo-900", Off: "text-gray-900" -->
-                <span class="block text-sm font-medium">
+                <span
+                  class="block text-sm font-medium"
+                  :class="[
+                    splitMode === 'extractSingle' ? 'text-tertiary' : '',
+                  ]"
+                >
                   Extract mode (Single Page)
                 </span>
                 <!-- On: "text-indigo-700", Off: "text-gray-500" -->
-                <span class="block text-sm">
+                <span
+                  class="block text-sm"
+                  :class="[
+                    splitMode === 'extractSingle' ? 'text-tertiary' : '',
+                  ]"
+                >
                   Select to extract single page from PDF file
                 </span>
               </label>
             </div>
-            <div class="relative border border-gray-200 p-4 flex">
+            <div
+              class="relative border border-gray-200 p-4 flex"
+              :class="[
+                splitMode === 'extractMultiple' ? 'border-tertiary z-10' : '',
+              ]"
+            >
               <div class="flex items-center h-5">
                 <input
                   id="settings-option-2"
@@ -112,11 +145,21 @@
                 class="ml-3 flex flex-col cursor-pointer"
               >
                 <!-- On: "text-indigo-900", Off: "text-gray-900" -->
-                <span class="block text-sm font-medium">
+                <span
+                  class="block text-sm font-medium"
+                  :class="[
+                    splitMode === 'extractMultiple' ? 'text-tertiary' : '',
+                  ]"
+                >
                   Extract mode (Multiple Pages)
                 </span>
                 <!-- On: "text-indigo-700", Off: "text-gray-500" -->
-                <span class="block text-sm">
+                <span
+                  class="block text-sm"
+                  :class="[
+                    splitMode === 'extractMultiple' ? 'text-tertiary' : '',
+                  ]"
+                >
                   Select to extract multiple pages from PDF file
                 </span>
               </label>
@@ -190,7 +233,7 @@
         <button
           type="button"
           @click="splitHandler"
-          class="inline-flex uppercase items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-sm shadow-sm text-gray-800 bg-tertiary hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-700 mr-4"
+          class="inline-flex uppercase items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-sm shadow-sm text-gray-800 bg-tertiary hover:bg-tertiary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-tertiary-dark mr-4"
         >
           Split pdf
         </button>

@@ -3,11 +3,17 @@
     class="bg-primary fixed w-full z-10 h-10 shadow-sm border-b border-gray-800"
   >
     <ul class="space-x-4 flex justify-center items-center">
-      <li class="text-gray-300 hover:text-gray-400 text-sm py-3 cursor-pointer">
-        <router-link to="/merge">Merge pdfs</router-link>
+      <li
+        class="hover:text-tertiary-dark text-sm py-3 cursor-pointer"
+        :class="[isMergeRoute ? 'text-tertiary' : 'text-gray-300']"
+      >
+        <router-link to="/merge">Merge PDF</router-link>
       </li>
-      <li class="text-gray-300 hover:text-gray-400 text-sm py-3 cursor-pointer">
-        <router-link to="/split">Split pdfs</router-link>
+      <li
+        class="hover:text-tertiary-dark text-sm py-3 cursor-pointer"
+        :class="[isSplitRoute ? 'text-tertiary' : 'text-gray-300']"
+      >
+        <router-link to="/split">Split PDF</router-link>
       </li>
     </ul>
   </div>
@@ -15,5 +21,13 @@
 <script>
 export default {
   name: "NavBar",
+  computed: {
+    isMergeRoute() {
+      return this.$route.name.toLowerCase() === "merge";
+    },
+    isSplitRoute() {
+      return this.$route.name.toLowerCase() === "split";
+    },
+  },
 };
 </script>
