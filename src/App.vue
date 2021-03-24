@@ -14,6 +14,7 @@ import { defineComponent } from "vue";
 import { ipcRenderer } from "electron";
 import Navbar from "@/components/NavBar.vue";
 import SideBar from "@/components/SideBar.vue";
+
 export default defineComponent({
   components: { Navbar, SideBar },
   data() {

@@ -9,6 +9,9 @@
         Select file to split
       </button>
     </div>
+    <div class="mt-4" v-if="alertState">
+      <Alert :message="successMsg" :clickHandler="hideAlert" />
+    </div>
     <div class="mt-4">
       <div class="">
         <label for="destination" class="block text-sm font-medium text-gray-300"
@@ -249,17 +252,21 @@ import {
   extractSinglePage,
   extractMultiplePages,
 } from "../lib/PdfClient";
+import Alert from "@/components/Alert.vue";
 import { defineComponent } from "vue";
 export default defineComponent({
   name: "Split",
+  components: { Alert },
   data() {
     return {
       splitFileName: "",
       errorMsg: "",
+      successMsg: "Files split successfully",
       splitMode: "splitSingle",
       singleExtractPage: "",
       fromPage: "",
       toPage: "",
+      alertState: false,
       mergeExtracted: true,
     };
   },
@@ -275,8 +282,14 @@ export default defineComponent({
     openDirectoryDialog() {
       Utils.openDirectoryDialog();
     },
-
+    showAlert() {
+      this.alertState = true;
+    },
+    hideAlert() {
+      this.alertState = false;
+    },
     async splitHandler() {
+      this.errorMsg = "";
       const file = this.$store.state.fileList[0];
       if (!file) {
         this.errorMsg = "Please select file to split";
@@ -309,6 +322,7 @@ export default defineComponent({
               `${file.name}-extract-${pageNum}.pdf`,
               this.destinationDir
             );
+            this.showAlert();
           } else {
             this.errorMsg = result.errorMsg;
           }
@@ -331,6 +345,7 @@ export default defineComponent({
               `${file.name}-extracted.pdf`,
               this.destinationDir
             );
+            this.showAlert();
           } else if (!result.errorMsg && !this.mergeExtracted) {
             result.data.forEach((byteArray, i) => {
               ipcRenderer.send(
@@ -340,6 +355,7 @@ export default defineComponent({
                 this.destinationDir
               );
             });
+            this.showAlert();
           } else {
             this.errorMsg = result.errorMsg;
           }
@@ -355,8 +371,9 @@ export default defineComponent({
     });
     ipcRenderer.on("directory-selected", (_, filePaths) => {
       Utils.selectDirectory(filePaths);
-      //this.$store.commit("setDestinationDirectory", filePaths[0]);
     });
+    this.$store.commit("clearFileList");
+    this.alertState = false;
   },
 });
 </script>

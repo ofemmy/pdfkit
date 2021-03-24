@@ -9,6 +9,9 @@
         Select files to merge
       </button>
     </div>
+    <div class="mt-4" v-if="alertState">
+      <Alert :message="successMsg" :clickHandler="hideAlert" />
+    </div>
     <div class="mt-4">
       <div class="">
         <label for="destination" class="block text-sm font-medium text-gray-300"
@@ -75,11 +78,18 @@ import { defineComponent } from "vue";
 import { ipcRenderer } from "electron";
 import { Utils } from "../lib/Utils";
 import { mergePdf } from "@/lib/PdfClient";
+import Alert from "@/components/Alert.vue";
 import { File } from "../types";
 export default defineComponent({
+  components: { Alert },
   name: "Merge",
   data() {
-    return { mergedFileName: "", errorMsg: "" };
+    return {
+      mergedFileName: "",
+      errorMsg: "",
+      successMsg: "Files successfully merged",
+      alertState: false,
+    };
   },
   computed: {
     files(): Array<File> {
@@ -98,14 +108,21 @@ export default defineComponent({
       Utils.openDirectoryDialog();
       //ipcRenderer.send("select-directory");
     },
+    showAlert() {
+      this.alertState = true;
+    },
+    hideAlert() {
+      this.alertState = false;
+    },
     async merge() {
+      this.errorMsg = "";
       const files = this.$store.state.fileList;
       if (files.length <= 1) {
         this.errorMsg = "Please select more than one file to merge";
         return;
       }
       if (!this.mergedFileName.trim()) {
-        this.errorMsg = "Merged filename is required";
+        this.errorMsg = "Merged mergedFileName is required";
         return;
       }
       const result = await mergePdf(files);
@@ -113,9 +130,10 @@ export default defineComponent({
         ipcRenderer.send(
           "save-file",
           result.data,
-          this.mergedFileName,
+          Utils.formatFileName(this.mergedFileName),
           this.destinationDir
         );
+        this.showAlert();
       }
     },
   },
@@ -127,6 +145,8 @@ export default defineComponent({
       Utils.selectDirectory(filePaths);
       //this.$store.commit("setDestinationDirectory", filePaths[0]);
     });
+    this.$store.commit("clearFileList");
+    this.hideAlert();
   },
 });
 </script>

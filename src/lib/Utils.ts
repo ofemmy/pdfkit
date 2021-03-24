@@ -12,6 +12,10 @@ export const Utils = {
     }));
     AppStore.commit("addToFileList", files);
   },
+  formatFileName(fileName: string): string {
+    const x = fileName.split(".")[0];
+    return `${x}.pdf`;
+  },
   selectDirectory(dirPath: string[]): void {
     AppStore.commit("setDestinationDirectory", dirPath[0]);
   },

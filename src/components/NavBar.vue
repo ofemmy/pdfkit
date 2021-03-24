@@ -23,10 +23,10 @@ export default {
   name: "NavBar",
   computed: {
     isMergeRoute() {
-      return this.$route.name.toLowerCase() === "merge";
+      return this.$route.path === "/" || this.$route.path === "/merge";
     },
     isSplitRoute() {
-      return this.$route.name.toLowerCase() === "split";
+      return this.$route.path === "/split";
     },
   },
 };

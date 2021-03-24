@@ -26,6 +26,9 @@ export const AppStore = createStore<State>({
     updateList(state, payload) {
       state.fileList = payload;
     },
+    clearFileList(state) {
+      state.fileList = [];
+    },
     updateDirectory(state, dirName: string) {
       console.log(dirName);
     },
