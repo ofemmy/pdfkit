@@ -1,7 +1,12 @@
 {
-  "name": "pdf-toolkit",
+  "name": "PDFkit",
   "version": "0.1.0",
   "private": true,
+  "description": "Desktop application to merge and split PDF files",
+  "author": {
+    "name": "Oladayo Fagbemi",
+    "email": "oofagbemi@outlook.com"
+  },
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -9,14 +14,24 @@
     "electron:build": "vue-cli-service electron:build",
     "electron:serve": "vue-cli-service electron:serve",
     "postinstall": "electron-builder install-app-deps",
-    "postuninstall": "electron-builder install-app-deps"
+    "postuninstall": "electron-builder install-app-deps",
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
   "main": "background.js",
+  "build": {
+    "appId":"org.oladayo.pdfkit",
+    "nsis":{
+    "createDesktopShortcut":"always"
+    }
+  },
   "dependencies": {
     "@tailwindcss/forms": "^0.2.1",
     "@tailwindcss/postcss7-compat": "^2.0.2",
     "autoprefixer": "^9",
     "core-js": "^3.6.5",
+    "electron-squirrel-startup": "^1.0.0",
     "es6-promise": "^4.2.8",
     "pdf-lib": "^1.16.0",
     "postcss": "^7",
@@ -27,6 +42,10 @@
     "vuex": "^4.0.0"
   },
   "devDependencies": {
+    "@electron-forge/maker-deb": "^6.0.0-beta.54",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.54",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.54",
+    "@electron-forge/maker-zip": "^6.0.0-beta.54",
     "@types/electron-devtools-installer": "^2.2.0",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",
