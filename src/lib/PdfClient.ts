@@ -2,8 +2,9 @@ import { PDFDocument } from "pdf-lib";
 import * as fs from "fs";
 import { flatten, range } from "lodash";
 import { File } from "../types";
+import Zip from "adm-zip";
 const fsPromise = fs.promises;
-type Result = { data: Uint8Array[] | Uint8Array; errorMsg: string };
+type Result = { data: Uint8Array[] | Uint8Array | Buffer; errorMsg: string };
 export async function mergePdf(files: Array<File>): Promise<Result> {
   const pdfDoc = await PDFDocument.create();
   const result: Result = {
@@ -45,7 +46,10 @@ export async function splitIntoSinglePages(file: File): Promise<Result> {
       return result;
     }
     const outputPdfDocs = await splitPDFDocument(inputPdf);
-    result.data = await Promise.all(outputPdfDocs.map((pdf) => pdf.save()));
+    const res: Uint8Array[] = await Promise.all(
+      outputPdfDocs.map((pdf) => pdf.save())
+    );
+    result.data = zipFiles(res);
   } catch (error) {
     console.log(error);
     result.errorMsg = "Oops something went wrong please try again";
@@ -103,7 +107,10 @@ export async function extractMultiplePages(
         pageFrom,
         pageTo
       );
-      result.data = await Promise.all(resultPdfs.map((pdf) => pdf.save()));
+      const res: Uint8Array[] = await Promise.all(
+        resultPdfs.map((pdf) => pdf.save())
+      );
+      result.data = zipFiles(res);
     }
 
     return result;
@@ -174,4 +181,11 @@ async function extractWithoutMerge(file: PDFDocument, pageFrom, pageTo) {
     console.log(error);
   }
   return resultPdfDoc;
+}
+function zipFiles(bufferArray: Uint8Array[]): Buffer {
+  const zip = new Zip();
+  bufferArray.forEach((data, i) => {
+    zip.addFile(`result-${i}.pdf`, Buffer.from(data.buffer));
+  });
+  return zip.toBuffer();
 }

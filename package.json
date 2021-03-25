@@ -1,11 +1,15 @@
 {
   "name": "PDFkit",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "description": "Desktop application to merge and split PDF files",
   "author": {
     "name": "Oladayo Fagbemi",
     "email": "oofagbemi@outlook.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ofemmy/pdfkit"
   },
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -20,15 +24,11 @@
     "make": "electron-forge make"
   },
   "main": "background.js",
-  "build": {
-    "appId":"org.oladayo.pdfkit",
-    "nsis":{
-    "createDesktopShortcut":"always"
-    }
-  },
   "dependencies": {
     "@tailwindcss/forms": "^0.2.1",
     "@tailwindcss/postcss7-compat": "^2.0.2",
+    "@types/adm-zip": "^0.4.33",
+    "adm-zip": "^0.5.4",
     "autoprefixer": "^9",
     "core-js": "^3.6.5",
     "electron-squirrel-startup": "^1.0.0",

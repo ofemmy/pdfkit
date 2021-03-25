@@ -87,7 +87,7 @@ export default defineComponent({
     return {
       mergedFileName: "",
       errorMsg: "",
-      successMsg: "Files successfully merged",
+      successMsg: "Files merged. Please check destination folder.",
       alertState: false,
     };
   },
@@ -114,6 +114,10 @@ export default defineComponent({
     hideAlert() {
       this.alertState = false;
     },
+    reset() {
+      this.mergedFileName = "";
+      this.$store.commit("clearFileList");
+    },
     async merge() {
       this.errorMsg = "";
       const files = this.$store.state.fileList;
@@ -122,7 +126,7 @@ export default defineComponent({
         return;
       }
       if (!this.mergedFileName.trim()) {
-        this.errorMsg = "Merged mergedFileName is required";
+        this.errorMsg = "Merged filename is required";
         return;
       }
       const result = await mergePdf(files);
@@ -134,6 +138,7 @@ export default defineComponent({
           this.destinationDir
         );
         this.showAlert();
+        this.reset();
       }
     },
   },

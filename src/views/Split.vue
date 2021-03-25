@@ -261,7 +261,7 @@ export default defineComponent({
     return {
       splitFileName: "",
       errorMsg: "",
-      successMsg: "Files split successfully",
+      successMsg: "",
       splitMode: "splitSingle",
       singleExtractPage: "",
       fromPage: "",
@@ -282,11 +282,18 @@ export default defineComponent({
     openDirectoryDialog() {
       Utils.openDirectoryDialog();
     },
+    formatFileName(fileName: string) {
+      const x = fileName.split(".")[0];
+      return x;
+    },
     showAlert() {
       this.alertState = true;
     },
     hideAlert() {
       this.alertState = false;
+    },
+    reset() {
+      this.$store.commit("clearFileList");
     },
     async splitHandler() {
       this.errorMsg = "";
@@ -301,14 +308,16 @@ export default defineComponent({
         case "splitSingle":
           result = await splitIntoSinglePages(file);
           if (!result.errorMsg) {
-            result.data.forEach((byteArray, i) => {
-              ipcRenderer.send(
-                "save-file",
-                byteArray,
-                `${file.name}-${i + 1}.pdf`,
-                this.destinationDir
-              );
-            });
+            ipcRenderer.send(
+              "save-file",
+              result.data,
+              "result.zip",
+              this.destinationDir
+            );
+            this.successMsg =
+              "Success! File saved as result.zip in destination folder";
+            this.showAlert();
+            this.reset();
           } else {
             this.errorMsg = result.errorMsg;
           }
@@ -319,10 +328,13 @@ export default defineComponent({
             ipcRenderer.send(
               "save-file",
               result.data,
-              `${file.name}-extract-${pageNum}.pdf`,
+              "result.pdf",
               this.destinationDir
             );
+            this.successMsg =
+              "Success! File saved as result.pdf in destination folder";
             this.showAlert();
+            this.reset();
           } else {
             this.errorMsg = result.errorMsg;
           }
@@ -342,20 +354,24 @@ export default defineComponent({
             ipcRenderer.send(
               "save-file",
               result.data,
-              `${file.name}-extracted.pdf`,
+              "extracted.pdf",
               this.destinationDir
             );
+            this.successMsg =
+              "Success! File saved as extracted.pdf in destination folder";
             this.showAlert();
+            this.reset();
           } else if (!result.errorMsg && !this.mergeExtracted) {
-            result.data.forEach((byteArray, i) => {
-              ipcRenderer.send(
-                "save-file",
-                byteArray,
-                `${file.name}-${i + 1}.pdf`,
-                this.destinationDir
-              );
-            });
+            ipcRenderer.send(
+              "save-file",
+              result.data,
+              "extracted.zip",
+              this.destinationDir
+            );
+            this.successMsg =
+              "Success! File saved as extracted.zip in destination folder";
             this.showAlert();
+            this.reset();
           } else {
             this.errorMsg = result.errorMsg;
           }
